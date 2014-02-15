@@ -1,0 +1,28 @@
+#!/bin/sh
+
+dbname=portland
+
+hood_query=$(cat sql/portland/neighborhoods.sql)
+psql -t -c "$hood_query" $dbname > "geojson/neighborhoods.json"
+
+neighborhood_ids=$(psql -t -c "select gid from neighborhoods where coalit !='unclaimed' order by gid" $dbname)
+
+# for gid in $neighborhood_ids; do
+#   mkdir -p geojson/$gid
+
+#   echo $(psql -t -c "SELECT name from neighborhoods WHERE gid=${gid}" $dbname)
+
+#   land_query=$(cat sql/land.sql | sed -e "s/%NEIGHBORHOOD_GID%/${gid}/g")
+#   buildings_query=$(cat sql/buildings.sql | sed -e "s/%NEIGHBORHOOD_GID%/${gid}/g")
+#   roads_query=$(cat sql/roads.sql | sed -e "s/%NEIGHBORHOOD_GID%/${gid}/g")
+#   parks_query=$(cat sql/parks.sql | sed -e "s/%NEIGHBORHOOD_GID%/${gid}/g")
+#   water_query=$(cat sql/water.sql | sed -e "s/%NEIGHBORHOOD_GID%/${gid}/g")
+
+#   psql -t -c "$land_query" $dbname > "geojson/neighborhoods/${gid}/land.json"
+#   psql -t -c "$buildings_query" $dbname > "geojson/neighborhoods/${gid}/buildings.json"
+#   psql -t -c "$roads_query" $dbname > "geojson/neighborhoods/${gid}/roads.json"
+#   psql -t -c "$parks_query" $dbname > "geojson/neighborhoods/${gid}/parks.json"
+#   psql -t -c "$water_query" $dbname > "geojson/neighborhoods/${gid}/water.json"
+# done
+
+

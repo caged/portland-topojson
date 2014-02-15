@@ -1,0 +1,10 @@
+#!/bin/sh
+dbname=portland
+
+topojson --simplify-proportion .8 -p -o "topojson/neighborhoods.json" -- "geojson/neighborhoods.json"
+
+neighborhood_ids=$(psql -t -c "select gid from neighborhoods where coalit !='unclaimed' order by gid" $dbname)
+
+for gid in $neighborhood_ids; do
+  topojson --simplify-proportion .8 -p -o "topojson/${gid}.json" -- "geojson/${gid}/land.json" "geojson/${gid}/buildings.json" "geojson/${gid}/roads.json" "geojson/${gid}/water.json" "geojson/${gid}/parks.json"
+done
