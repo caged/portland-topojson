@@ -1,9 +1,6 @@
 SELECT row_to_json(featurecollection)
-FROM
-  (SELECT 'FeatureCollection' AS TYPE,
-          array_to_json(array_agg(feature)) AS features
-   FROM
-     (SELECT 'Feature' AS TYPE,
+  FROM (SELECT 'FeatureCollection' AS TYPE, array_to_json(array_cat('{}', array_agg(feature))) AS features
+  FROM (SELECT 'Feature' AS TYPE,
              st_asgeojson(st_intersection(neighborhoods.geom, layer.geom))::json as geometry,
              row_to_json(
                            (SELECT props
