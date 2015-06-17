@@ -5,12 +5,16 @@ dbname=portland
 mkdir -p geojson/portland
 mkdir -p geojson/neighborhoods
 
+# Generate city-wide features
+land_query=$(cat sql/portland/land.sql)
 hood_query=$(cat sql/portland/neighborhoods.sql)
 water_query=$(cat sql/portland/water.sql)
 
+psql -t -c "$land_query" $dbname > "geojson/portland/land.json"
 psql -t -c "$hood_query" $dbname > "geojson/portland/neighborhoods.json"
 psql -t -c "$water_query" $dbname > "geojson/portland/water.json"
 
+# Generate features per neighborhood
 neighborhood_ids=$(psql -t -c "select gid from neighborhoods where coalit !='unclaimed' order by gid" $dbname)
 
 for gid in $neighborhood_ids; do
